@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -28,6 +28,10 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 2rem;
       transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .card:hover {
       transform: translateY(-5px);
@@ -38,25 +42,39 @@
       font-size: 1.2rem;
       color: #2980b9;
       font-weight: bold;
+      margin-top: 1rem;
       display: block;
+    }
+    .icon {
+      font-size: 3rem;
+      color: #27ae60;
     }
   </style>
 </head>
 <body>
   <h1>Algebra Escape Rooms</h1>
-  <div class="grid">
-    <div class="card">
-      <a href="Exponent_Escape_Room.html">Exponents Escape Room</a>
-    </div>
-    <div class="card">
-      <a href="Inequality_Escape_Room.html">Inequalities Escape Room</a>
-    </div>
-    <div class="card">
-      <a href="Literal_Equations_Escape_Room.html">Literal Equations Escape Room</a>
-    </div>
-    <div class="card">
-      <a href="Square_Root_Operations_Escape_Room.html">Square Root Operations Escape Room</a>
-    </div>
-  </div>
+  <div class="grid" id="appGrid"></div>
+
+  <script>
+    // List of apps (file + title + icon)
+    const apps = [
+      { file: "Exponent_Escape_Room.html", title: "Exponents Escape Room", icon: "x²" },
+      { file: "Inequality_Escape_Room.html", title: "Inequalities Escape Room", icon: "≥" },
+      { file: "Literal_Equations_Escape_Room.html", title: "Literal Equations Escape Room", icon: "ƒ(x)" },
+      { file: "Square_Root_Operations_Escape_Room.html", title: "Square Root Operations Escape Room", icon: "√" }
+    ];
+
+    const grid = document.getElementById("appGrid");
+
+    apps.forEach(app => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="icon">${app.icon}</div>
+        <a href="${app.file}">${app.title}</a>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
 </body>
 </html>
