@@ -1,80 +1,110 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Algebra Escape Rooms</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root { --ink:#2c3e50; --brand:#2980b9; --bg:#f0f4f8; --card:#fff; }
+    * { box-sizing: border-box; }
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      margin: 0;
-      padding: 2rem;
-      text-align: center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg); margin:0; padding:2rem; text-align:center; color:var(--ink);
     }
-    h1 {
-      color: #2c3e50;
-      margin-bottom: 2rem;
-    }
+    h1 { margin: 0 0 2rem; font-weight: 700; }
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      max-width: 1000px;
-      margin: 0 auto;
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+      gap:1.25rem; max-width:1000px; margin:0 auto;
     }
     .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      padding: 2rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      background:var(--card); border-radius:14px; padding:1.75rem;
+      box-shadow:0 6px 18px rgba(0,0,0,.08); transition:transform .2s, box-shadow .2s;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
     }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    .card:hover { transform:translateY(-4px); box-shadow:0 10px 24px rgba(0,0,0,.12); }
+    .icon { width:72px; height:72px; margin-bottom:.75rem; color:#27ae60; }
+    .title {
+      text-decoration:none; font-weight:700; color:var(--brand); font-size:1.1rem;
     }
-    .card a {
-      text-decoration: none;
-      font-size: 1.2rem;
-      color: #2980b9;
-      font-weight: bold;
-      margin-top: 1rem;
-      display: block;
-    }
-    .icon {
-      font-size: 3rem;
-      color: #27ae60;
-    }
+    .title:hover { text-decoration:underline; }
+    footer { margin-top:2rem; font-size:.9rem; opacity:.7; }
   </style>
 </head>
 <body>
   <h1>Algebra Escape Rooms</h1>
+
+  <!-- Reusable SVG symbols (keeps markup clean) -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <!-- Exponent: x² -->
+      <symbol id="ico-exp" viewBox="0 0 100 100" aria-labelledby="t-exp" role="img">
+        <title id="t-exp">Exponent</title>
+        <g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 76 L44 24" />
+          <path d="M76 76 L44 24" />
+          <!-- superscript 2 -->
+          <path d="M58 20 q10-12 22-4 q7 4 7 12 q0 6-6 10 l-22 14 h28" />
+        </g>
+      </symbol>
+
+      <!-- Inequality: double bar with angled tick (represents ≤/≥ family) -->
+      <symbol id="ico-ineq" viewBox="0 0 100 100" aria-labelledby="t-ineq" role="img">
+        <title id="t-ineq">Inequality</title>
+        <g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 34 L82 22" />
+          <path d="M18 64 L82 52" />
+          <path d="M18 78 L82 78" />
+        </g>
+      </symbol>
+
+      <!-- Literal equations: f(x) -->
+      <symbol id="ico-fx" viewBox="0 0 100 100" aria-labelledby="t-fx" role="img">
+        <title id="t-fx">Function</title>
+        <g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 70 q8-40 34-40 h18" />
+          <path d="M30 50 h22" />
+          <path d="M60 40 q8 0 14 8 q-8 10-14 22" />
+          <path d="M78 40 q-8 0 -14 8 q8 10 14 22" />
+        </g>
+      </symbol>
+
+      <!-- Square root: radical with x -->
+      <symbol id="ico-sqrt" viewBox="0 0 100 100" aria-labelledby="t-sqrt" role="img">
+        <title id="t-sqrt">Square Root</title>
+        <g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 60 l14 22 l16 -48 h16" />
+          <path d="M56 34 h34" />
+          <path d="M66 66 l18 -24" />
+          <path d="M74 66 l-18 -24" />
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
   <div class="grid" id="appGrid"></div>
 
   <script>
-    // List of apps (file + title + icon)
+    // Update this list when you add a new app (one line each)
     const apps = [
-      { file: "Exponent_Escape_Room.html", title: "Exponents Escape Room", icon: "x²" },
-      { file: "Inequality_Escape_Room.html", title: "Inequalities Escape Room", icon: "≥" },
-      { file: "Literal_Equations_Escape_Room.html", title: "Literal Equations Escape Room", icon: "ƒ(x)" },
-      { file: "Square_Root_Operations_Escape_Room.html", title: "Square Root Operations Escape Room", icon: "√" }
+      { file: "Exponent_Escape_Room.html",              title: "Exponents Escape Room",          icon: "#ico-exp"  },
+      { file: "Inequality_Escape_Room.html",            title: "Inequalities Escape Room",       icon: "#ico-ineq" },
+      { file: "Literal_Equations_Escape_Room.html",     title: "Literal Equations Escape Room",  icon: "#ico-fx"   },
+      { file: "Square_Root_Operations_Escape_Room.html",title: "Square Root Operations",         icon: "#ico-sqrt" }
     ];
 
     const grid = document.getElementById("appGrid");
-
     apps.forEach(app => {
-      const card = document.createElement("div");
+      const card = document.createElement("a");
+      card.href = app.file;
       card.className = "card";
       card.innerHTML = `
-        <div class="icon">${app.icon}</div>
-        <a href="${app.file}">${app.title}</a>
+        <svg class="icon"><use href="${app.icon}"></use></svg>
+        <span class="title">${app.title}</span>
       `;
       grid.appendChild(card);
     });
   </script>
+
+  <footer>Add new apps by pushing the HTML file and appending one line to the list above.</footer>
 </body>
 </html>
