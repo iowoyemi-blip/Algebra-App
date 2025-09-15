@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Isaac’s Deployment User Guide</title>
+<style>
+  :root{
+    --ink:#1f2937; --muted:#6b7280; --brand:#2563eb; --bg:#f7fafc; --card:#ffffff;
+    --border:#e5e7eb; --shadow:0 6px 18px rgba(0,0,0,.06);
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  header{padding:2rem 1rem;text-align:center;background:#eef2ff;border-bottom:1px solid #e0e7ff}
+  h1{margin:0 0 .5rem}
+  .container{max-width:1000px;margin:0 auto;padding:1rem}
+  details{border:1px solid var(--border);background:var(--card);border-radius:12px;margin:.75rem 0}
+  details summary{cursor:pointer;padding:.75rem 1rem;font-weight:600}
+  details[open] summary{border-bottom:1px solid var(--border)}
+  .panel{padding:1rem}
+  pre{background:#0b1020;color:#e6edf3;border-radius:10px;padding:1rem;overflow:auto;border:1px solid #111827}
+  code{font-family:var(--mono)}
+  .callout{border-left:6px solid #16a34a;background:#ecfdf5;padding:.75rem 1rem;border-radius:10px;margin:.75rem 0}
+  .warn{border-left-color:#b45309;background:#fff7ed}
+  footer{margin:2rem 0;text-align:center;color:var(--muted)}
+  .icon-set{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+  svg{width:48px;height:48px;color:#2563eb}
+</style>
+</head>
+<body>
+<header>
+  <h1>Isaac’s User Guide</h1>
+  <p>A reference for deploying, organizing, and expanding student web apps.</p>
+</header>
+<main class="container">
+
+  <details open>
+    <summary>🚀 Hosting Options</summary>
+    <div class="panel">
+      <ul>
+        <li><strong>GitHub Pages</strong> (static hosting, free).</li>
+        <li><strong>Cloudflare Pages</strong> (faster global CDN, custom domains).</li>
+        <li><strong>Netlify / Vercel</strong> (auto-deploy from GitHub).</li>
+        <li><strong>Optional Backends</strong>: Cloudflare Workers, Vercel Functions.</li>
+        <li><strong>Optional Data/Auth</strong>: Supabase, Firebase, Neon.</li>
+      </ul>
+      <div class="callout"><strong>Recommendation:</strong> GitHub Pages + hub-style <code>index.html</code>.</div>
+    </div>
+  </details>
+
+  <details>
+    <summary>📂 Creating & Pushing a Repo</summary>
+    <div class="panel">
+      <pre><code>cd ~/Documents/Algebra-app
+git init
+git add .
+git commit -m "First commit"
+git branch -M main
+git remote add origin https://github.com/&lt;username&gt;/Algebra-App.git
+git push -u origin main</code></pre>
+      <p>Enable GitHub Pages in repo settings → Pages → Branch <code>main</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>🖥️ GitHub Web UI (Backup)</summary>
+    <div class="panel">
+      <ul>
+        <li><strong>Upload new files</strong>: Add file → Upload files → Drag in → Commit.</li>
+        <li><strong>Edit a file</strong>: Open file → Pencil icon → Edit → Commit.</li>
+        <li><strong>Upload multiple</strong>: Unzip locally, drag files into upload window.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>🔗 Homepage Index (Cards & Icons)</summary>
+    <div class="panel">
+      <p>Use a JavaScript array to build cards dynamically:</p>
+      <pre><code>const apps = [
+  { file: "Exponent_Escape_Room.html", title: "Exponents Escape Room", icon: "#ico-exp" },
+  { file: "Inequality_Escape_Room.html", title: "Inequalities Escape Room", icon: "#ico-ineq" }
+];</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>🌐 Hub Pages (Multiple Repos / Collections)</summary>
+    <div class="panel">
+      <p>Create multiple repos, each with its own Pages site. Link them from one “hub” index.</p>
+      <p>Example item types:</p>
+      <pre><code>// Internal app in this repo
+{ section:"Algebra", type:"internal", file:"Exponent_Escape_Room.html", title:"Exponents", icon:"#ico-exp" }
+
+// External repo site
+{ section:"Geometry", type:"external", url:"https://username.github.io/Geometry-App/", title:"Geometry Hub", icon:"#ico-geo" }
+
+// Coming soon placeholder
+{ section:"AI Tools", type:"coming", title:"AI Teaching Utilities", icon:"#ico-link", badges:["Coming Soon"], disabled:true }</code></pre>
+      <div class="callout">This hub lets you expand into Algebra, Geometry, Devotionals, AI tools, etc.</div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🖥️ Using Another Machine</summary>
+    <div class="panel">
+      <p><strong>Option 1 (HTTPS + Token):</strong></p>
+      <pre><code>git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+git config --global credential.helper osxkeychain   # macOS</code></pre>
+      <p><strong>Option 2 (SSH):</strong></p>
+      <pre><code>ssh-keygen -t ed25519 -C "you@example.com"
+cat ~/.ssh/id_ed25519.pub   # paste into GitHub → SSH keys
+git remote set-url origin git@github.com:&lt;username&gt;/&lt;repo&gt;.git</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>🛠 Troubleshooting</summary>
+    <div class="panel">
+      <p><strong>Identity unknown:</strong></p>
+      <pre><code>git config --global user.name "Your Name"
+git config --global user.email "you@example.com"</code></pre>
+      <p><strong>No branch “main” yet:</strong></p>
+      <pre><code>git add .
+git commit -m "First commit"
+git branch -M main
+git push -u origin main</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>🎨 SVG Icon Set (Reusable)</summary>
+    <div class="panel">
+      <p>Place once in your <code>index.html</code>. Then reference by ID (<code>#ico-exp</code>, etc).</p>
+      <pre><code>&lt;svg width="0" height="0" style="position:absolute"&gt;
+  &lt;defs&gt;
+    &lt;symbol id="ico-exp" viewBox="0 0 100 100"&gt;
+      &lt;g fill="none" stroke="currentColor" stroke-width="6"&gt;
+        &lt;path d="M12 76 L44 24"/&gt;&lt;path d="M76 76 L44 24"/&gt;
+        &lt;path d="M58 20 q10-12 22-4 q7 4 7 12 q0 6-6 10 l-22 14 h28"/&gt;
+      &lt;/g&gt;
+    &lt;/symbol&gt;
+    &lt;symbol id="ico-ineq" viewBox="0 0 100 100"&gt;
+      &lt;path d="M18 34 L82 22"/&gt;&lt;path d="M18 64 L82 52"/&gt;&lt;path d="M18 78 L82 78"/&gt;
+    &lt;/symbol&gt;
+    &lt;symbol id="ico-fx" viewBox="0 0 100 100"&gt;
+      &lt;path d="M18 70 q8-40 34-40 h18"/&gt;&lt;path d="M30 50 h22"/&gt;
+      &lt;path d="M60 40 q8 0 14 8 q-8 10-14 22"/&gt;&lt;path d="M78 40 q-8 0 -14 8 q8 10 14 22"/&gt;
+    &lt;/symbol&gt;
+    &lt;symbol id="ico-sqrt" viewBox="0 0 100 100"&gt;
+      &lt;path d="M10 60 l14 22 l16 -48 h16"/&gt;&lt;path d="M56 34 h34"/&gt;
+      &lt;path d="M66 66 l18 -24"/&gt;&lt;path d="M74 66 l-18 -24"/&gt;
+    &lt;/symbol&gt;
+    &lt;symbol id="ico-geo" viewBox="0 0 100 100"&gt;
+      &lt;circle cx="34" cy="60" r="18"/&gt;&lt;path d="M58 76 L84 24 L92 40 Z"/&gt;&lt;path d="M10 84 H90"/&gt;
+    &lt;/symbol&gt;
+    &lt;symbol id="ico-link" viewBox="0 0 100 100"&gt;
+      &lt;path d="M58 18 h24 v24"/&gt;&lt;path d="M82 18 L54 46"/&gt;&lt;rect x="18" y="34" width="48" height="48" rx="10"/&gt;
+    &lt;/symbol&gt;
+  &lt;/defs&gt;
+&lt;/svg&gt;</code></pre>
+      <div class="icon-set">
+        <svg><use href="#ico-exp"></use></svg>
+        <svg><use href="#ico-ineq"></use></svg>
+        <svg><use href="#ico-fx"></use></svg>
+        <svg><use href="#ico-sqrt"></use></svg>
+        <svg><use href="#ico-geo"></use></svg>
+        <svg><use href="#ico-link"></use></svg>
+      </div>
+    </div>
+  </details>
+
+</main>
+<footer>
+  User Guide • Includes Hub strategy + SVG icons 🚀
+</footer>
+</body>
+</html>
