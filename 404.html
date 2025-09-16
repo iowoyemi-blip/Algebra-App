@@ -2,14 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>Redirecting…</title>
   <meta http-equiv="refresh" content="0; url=./index.html" />
   <script>
-    // If meta refresh doesn’t work, do it in JS
+    // Fallback redirect if meta refresh fails
     window.location.href = "./index.html";
   </script>
-  <title>Redirecting…</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background:#f9fafb;
+      text-align:center;
+      padding:5rem 1rem;
+      color:#374151;
+    }
+    h1 { font-size:1.8rem; color:#111827; }
+    p { margin-top:1rem; color:#6b7280; }
+  </style>
 </head>
 <body>
-  <p>Redirecting back to the app…</p>
+  <h1>Page not found</h1>
+  <p>Redirecting you back to the Algebra Hub…</p>
 </body>
 </html>
