@@ -8,32 +8,46 @@
     body { font-family: Arial, sans-serif; background:#f0f4f8; margin:0; padding:2rem; text-align:center; }
     h1 { color:#2c3e50; margin-bottom:2rem; }
     h2 { margin:2rem 0 1rem; color:#374151; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:1.5rem; max-width:900px; margin:0 auto; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:1.5rem; max-width:1000px; margin:0 auto; }
     .card { background:#fff; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,.1); padding:2rem; transition:transform .2s, box-shadow .2s; }
     .card:hover { transform:translateY(-5px); box-shadow:0 6px 12px rgba(0,0,0,.15); }
-    .card a { text-decoration:none; font-size:1.2rem; color:#2980b9; font-weight:bold; }
+    .card a { text-decoration:none; font-size:1.1rem; color:#2980b9; font-weight:bold; }
   </style>
 </head>
 <body>
   <h1>Algebra Hub</h1>
 
-  <!-- Algebra Apps Section -->
-  <h2>Algebra Apps</h2>
-  <div class="grid" id="appGrid"></div>
+  <!-- Student Apps -->
+  <h2>Student Apps</h2>
+  <div class="grid" id="studentGrid"></div>
 
-  <!-- Other Resources Section -->
+  <!-- Teacher & Other Resources -->
+  <h2>Teacher / Other Resources</h2>
+  <div class="grid" id="teacherGrid"></div>
+
+  <!-- Hub Links -->
   <h2>Other Resources</h2>
   <div class="grid" id="hubGrid"></div>
 
   <script>
-    // Local apps inside this repo
-    const apps = [
-      { file: "Exponents_Escape_Room.html", title: "Exponents Escape Room" },
-      { file: "Inequalities_Escape_Room.html", title: "Inequalities Escape Room" },
-      { file: "Literal_Equations_Escape_Room.html", title: "Literal Equations Escape Room" }
+    // Student apps
+    const students = [
+      { file: "Exponent_Escape_Room.html", title: "Exponents Escape Room" },
+      { file: "Inequality_Escape_Room.html", title: "Inequalities Escape Room" },
+      { file: "Literal_Equations_Escape_Room.html", title: "Literal Equations Escape Room" },
+      { file: "Square_Root_Operations_Escape_Room.html", title: "Square Root Operations Escape Room" },
+      { file: "Radical-H_Escape_Room.html", title: "Radical H Escape Room" },
+      { file: "boss_battle_multistep_equations.html", title: "Boss Battle: Multistep Equations" }
     ];
 
-    // Hub cards pointing to other GitHub Pages repos
+    // Teacher-only or misc files
+    const teachers = [
+      { file: "Radical-H_Escape_Room-TEACHER.html", title: "Radical H Escape Room (Teacher)" },
+      { file: "Githut_User_Guide.html", title: "GitHub User Guide" },
+      { file: "MainHubIndex.html", title: "Main Hub Index (Draft)" }
+    ];
+
+    // External hub links
     const hubs = [
       { file: "https://iowoyemi-blip.github.io/retakes/", title: "Quiz Retakes Site" },
       { file: "https://iowoyemi-blip.github.io/Study_Guides/", title: "Study Guides Site" }
@@ -49,7 +63,8 @@
       });
     }
 
-    render(apps, "appGrid");
+    render(students, "studentGrid");
+    render(teachers, "teacherGrid");
     render(hubs, "hubGrid");
   </script>
 </body>
