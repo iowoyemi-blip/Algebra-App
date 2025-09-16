@@ -21,16 +21,12 @@
   <h2>Student Apps</h2>
   <div class="grid" id="studentGrid"></div>
 
-  <!-- Teacher & Other Resources -->
-  <h2>Teacher / Other Resources</h2>
-  <div class="grid" id="teacherGrid"></div>
-
-  <!-- Hub Links -->
+  <!-- Other Resources -->
   <h2>Other Resources</h2>
   <div class="grid" id="hubGrid"></div>
 
   <script>
-    // Student apps
+    // ✅ Student-facing apps only
     const students = [
       { file: "Exponent_Escape_Room.html", title: "Exponents Escape Room" },
       { file: "Inequality_Escape_Room.html", title: "Inequalities Escape Room" },
@@ -40,14 +36,7 @@
       { file: "boss_battle_multistep_equations.html", title: "Boss Battle: Multistep Equations" }
     ];
 
-    // Teacher-only or misc files
-    const teachers = [
-      { file: "Radical-H_Escape_Room-TEACHER.html", title: "Radical H Escape Room (Teacher)" },
-      { file: "Githut_User_Guide.html", title: "GitHub User Guide" },
-      { file: "MainHubIndex.html", title: "Main Hub Index (Draft)" }
-    ];
-
-    // External hub links
+    // 🌐 Hub links to other repos/sites
     const hubs = [
       { file: "https://iowoyemi-blip.github.io/retakes/", title: "Quiz Retakes Site" },
       { file: "https://iowoyemi-blip.github.io/Study_Guides/", title: "Study Guides Site" }
@@ -64,7 +53,6 @@
     }
 
     render(students, "studentGrid");
-    render(teachers, "teacherGrid");
     render(hubs, "hubGrid");
   </script>
 </body>
