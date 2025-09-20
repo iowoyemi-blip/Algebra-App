@@ -49,25 +49,24 @@
   </main>
 
 <script>
-// Direct KaTeX render helper
 function renderKatex(el, tex){ try{ katex.render(tex, el, {throwOnError:false}); }catch(e){ el.textContent = tex; } }
 
 const ROOMS = [
   { name:'Room 1 — Mild 🌶', blurb:'Warm-up powers & quotients', problems:[
-    {q:'(n\cdot 2n^{4})^{3}', ans:'8*n^15'},
-    {q:'\\dfrac{5x}{5x^{3}\cdot 2x^{3}}', ans:'1/2*x^-5'},
-    {q:'\n\left( \dfrac{m^{3}}{2m^{4}}\right)^{2}', ans:'1/4*m^-2'},
+    {q:'(n \\cdot 2n^{4})^{3}', ans:'8*n^15'},
+    {q:'\\dfrac{5x}{5x^{3} \\cdot 2x^{3}}', ans:'1/2*x^-5'},
+    {q:'\\left( \\dfrac{m^{3}}{2m^{4}} \\right)^{2}', ans:'1/4*m^-2'},
   ]},
   { name:'Room 2 — Medium 🌶🌶🌶', blurb:'Products and powers combined', problems:[
-    {q:'ab^{2}\cdot (2ab^{3})^{3}', ans:'8*a^4*b^11'},
+    {q:'ab^{2} \\cdot (2ab^{3})^{3}', ans:'8*a^4*b^11'},
     {q:'\\dfrac{(-x^{2}y^{4})^{5}}{x^{2}y^{3}}', ans:'-x^8*y^17'},
-    {q:'\\dfrac{2m^{2}n^{5}}{(mn)^{5}\cdot n^{4}}', ans:'2*m^-3*n^-4'},
+    {q:'\\dfrac{2m^{2}n^{5}}{(mn)^{5} \\cdot n^{4}}', ans:'2*m^-3*n^-4'},
   ]},
   { name:'Room 3 — Spicy 🌶🌶🌶🌶 (Part 1)', blurb:'Nested powers & quotients', problems:[
-    {q:'\n\left( \dfrac{(x^{2}y^{3}\cdot -x^{5})^{3}}{2x^{3}y^{2}} \right)^{2}', ans:'1/4*x^36*y^14'},
+    {q:'\\left( \\dfrac{(x^{2}y^{3} \\cdot -x^{5})^{3}}{2x^{3}y^{2}} \\right)^{2}', ans:'1/4*x^36*y^14'},
   ]},
   { name:'Room 4 — Spicy 🌶🌶🌶🌶 (Part 2)', blurb:'More nested expressions', problems:[
-    {q:'\\dfrac{((yx^{2})^{2}\cdot 2x^{3}y^{2})^{3}}{(x^{2}y^{3})^{2}}', ans:'8*x^17*y^6'},
+    {q:'\\dfrac{((yx^{2})^{2} \\cdot 2x^{3}y^{2})^{3}}{(x^{2}y^{3})^{2}}', ans:'8*x^17*y^6'},
   ]},
 ];
 
@@ -104,7 +103,6 @@ function sectionHTML(roomIndex){
   </section>`
 }
 
-// --- Checking logic (same as previous app) ---
 function normalize(input){
   let s=(input||'').trim().replace(/\s+/g,'');
   s=s.replace(/(\d)([a-zA-Z])/g,'$1*$2');
@@ -126,12 +124,9 @@ function correct(expected,input){ return normalize(expected)===normalize(input);
 function build(){
   const container=document.getElementById('rooms');
   container.innerHTML=ROOMS.map((_,i)=>sectionHTML(i)).join('');
-  // render math
   [...container.querySelectorAll('.q')].forEach(el=>{ const t=el.getAttribute('data-tex')||''; renderKatex(el,t); });
-  // lock all but first
   const sections=[...container.querySelectorAll('.room')];
   sections.forEach((sec,idx)=>{ if(idx>0){sec.style.opacity=.5; sec.style.pointerEvents='none'} });
-  // listeners
   sections.forEach((sec,roomIdx)=>{
     sec.addEventListener('click', (e)=>{
       if(!(e.target instanceof HTMLElement)) return;
