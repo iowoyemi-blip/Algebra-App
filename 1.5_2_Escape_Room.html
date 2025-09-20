@@ -40,7 +40,7 @@
   <header>
     <div class="wrap">
       <h1>Exponents Escape Room — Honors Set 1 (Student)</h1>
-      <p class="sub">Solve all problems in a room to unlock the next. Enter simplified answers (no spaces). Write your final answers with <strong>positive exponents only</strong>.</p>
+      <p class="sub">Final answers should be written with <strong>positive exponents</strong> (e.g., 1/(2x^5)). Fractions use "/". Press <kbd>Enter</kbd> to check.</p>
     </div>
   </header>
 
@@ -51,22 +51,23 @@
 <script>
 function renderKatex(el, tex){ try{ katex.render(tex, el, {throwOnError:false}); }catch(e){ el.textContent = tex; } }
 
+// For robustness, each problem can accept multiple correct textual forms
 const ROOMS = [
   { name:'Room 1 — Mild 🌶', blurb:'Warm-up powers & quotients', problems:[
-    {q:'(n \\cdot 2n^{4})^{3}', ans:'8n^15'},
-    {q:'\\dfrac{5x}{5x^{3} \\cdot 2x^{3}}', ans:'1/(2x^5)'},
-    {q:'\\left( \\dfrac{m^{3}}{2m^{4}} \\right)^{2}', ans:'1/(4m^2)'},
+    {q:'(n \\cdot 2n^{4})^{3}', ans:['8n^15','8*n^15']},
+    {q:'\\dfrac{5x}{5x^{3} \\cdot 2x^{3}}', ans:['1/(2x^5)','1/(2*x^5)','1/2*x^-5']},
+    {q:'\\left( \\dfrac{m^{3}}{2m^{4}} \\right)^{2}', ans:['1/(4m^2)','1/(4*m^2)','1/4*m^-2']},
   ]},
   { name:'Room 2 — Medium 🌶🌶🌶', blurb:'Products and powers combined', problems:[
-    {q:'ab^{2} \\cdot (2ab^{3})^{3}', ans:'8a^4b^11'},
-    {q:'\\dfrac{(-x^{2}y^{4})^{5}}{x^{2}y^{3}}', ans:'-x^8y^17'},
-    {q:'\\dfrac{2m^{2}n^{5}}{(mn)^{5} \\cdot n^{4}}', ans:'2/(m^3n^4)'},
+    {q:'ab^{2} \\cdot (2ab^{3})^{3}', ans:['8a^4b^11','8*a^4*b^11']},
+    {q:'\\dfrac{(-x^{2}y^{4})^{5}}{x^{2}y^{3}}', ans:['-x^8y^17','-x^8*y^17']},
+    {q:'\\dfrac{2m^{2}n^{5}}{(mn)^{5} \\cdot n^{4}}', ans:['2/(m^3n^4)','2/(m^3*n^4)','2*m^-3*n^-4']},
   ]},
   { name:'Room 3 — Spicy 🌶🌶🌶🌶 (Part 1)', blurb:'Nested powers & quotients', problems:[
-    {q:'\\left( \\dfrac{(x^{2}y^{3} \\cdot -x^{5})^{3}}{2x^{3}y^{2}} \\right)^{2}', ans:'(x^36y^14)/4'},
+    {q:'\\left( \\dfrac{(x^{2}y^{3} \\cdot -x^{5})^{3}}{2x^{3}y^{2}} \\right)^{2}', ans:['(x^36y^14)/4','x^36*y^14/4','1/4*x^36*y^14']},
   ]},
   { name:'Room 4 — Spicy 🌶🌶🌶🌶 (Part 2)', blurb:'More nested expressions', problems:[
-    {q:'\\dfrac{((yx^{2})^{2} \\cdot 2x^{3}y^{2})^{3}}{(x^{2}y^{3})^{2}}', ans:'8x^17y^6'},
+    {q:'\\dfrac{((yx^{2})^{2} \\cdot 2x^{3}y^{2})^{3}}{(x^{2}y^{3})^{2}}', ans:['8x^17y^6','8*x^17*y^6']},
   ]},
 ];
 
@@ -89,7 +90,7 @@ function sectionHTML(roomIndex){
             <div class="q" data-tex="${p.q.replace(/"/g,'&quot;')}"></div>
             <div class="input-area">
               <input type="text" placeholder="type your simplified answer" />
-              <button class="small check">Check</button>
+              <button class="small check" type="button">Check</button>
               <span class="feedback"></span>
             </div>
           </div>
@@ -98,82 +99,54 @@ function sectionHTML(roomIndex){
     </div>
     <div class="room-footer">
       <span class="lock">Solve all in this room to unlock the next.</span>
-      <button class="small pill summary">Room Progress</button>
+      <button class="small pill summary" type="button">Room Progress</button>
     </div>
   </section>`
 }
 
-function normalize(input){
-  // 1) Trim spaces
-  let s=(input||'').trim().replace(/\s+/g,'');
-
-  // 2) If the user types a reciprocal like 1/(2x^5), rewrite to 1/2*x^-5
-  const m = s.match(/^1\/\(([^()]+)\)$/);
-  if(m){
-    let den = (m[1]||'').replace(/[()]/g,'');
-    // insert * between number and variable (2x^5 -> 2*x^5)
-    den = den.replace(/(\d)([a-zA-Z])/g, function(_,d,l){ return d+'*'+l; });
-    // insert * between adjacent variable groups (x^2y^3 -> x^2*y^3)
-    den = den.replace(/([a-zA-Z](?:\^-?\d+)?)([a-zA-Z])/g, function(_,a,b){ return a+'*'+b; });
-    const toks = den.split('*').filter(Boolean);
-    let rebuiltCoeff = '1';
-    let rebuiltVars = [];
-    for(const tk of toks){
-      if(/^-?\d+$/.test(tk)){
-        rebuiltCoeff = mulFrac(rebuiltCoeff, '1/'+tk); // multiply by reciprocal of number
-      }else if(/^[a-zA-Z]+(?:\^-?\d+)?$/.test(tk)){
-        const parts = tk.split('^');
-        const v = parts[0];
-        const pow = parts.length>1 ? parseInt(parts[1],10) : 1;
-        rebuiltVars.push(v+'^'+(-pow));
-      }else{
-        rebuiltVars.push(tk);
-      }
-    }
-    const rebuilt = (rebuiltCoeff==='1'? '' : rebuiltCoeff==='-1'? '-' : rebuiltCoeff) + (rebuiltVars.length? '*'+rebuiltVars.join('*') : '');
-    s = rebuilt.replace(/^\*|\*$/g,'');
-  }
-
-  // 3) Normalize implicit multiplications in the remaining input
-  s = s.replace(/(\d)([a-zA-Z])/g, function(_,d,l){ return d+'*'+l; });
-  s = s.replace(/([a-zA-Z])(\d)/g, function(_,l,d){ return l+'*'+d; });
-
-  // 4) Split into coefficient and variable parts
-  const parts=s.split('*').filter(Boolean); let coeff='1'; const vars=[];
-  for(const p of parts){ if(/^[+-]?(\d+)(\/\d+)?$/.test(p)){ coeff=mulFrac(coeff,p);} else { vars.push(p);} }
-  // 5) Sort variable factors for canonical form
-  vars.sort((a,b)=>a.localeCompare(b));
-  const joined=(coeff==='1'?'' : coeff==='-1'?'-':coeff)+'*'+vars.join('*');
-  return joined.replace(/^\*|\*$/g,'');
-}
-
-function correct(expected,input){
-  return normalize(expected)===normalize(input);
-}
-
-function build(){
+function renderAll(){
   const container=document.getElementById('rooms');
   container.innerHTML=ROOMS.map((_,i)=>sectionHTML(i)).join('');
+  // Render math
   [...container.querySelectorAll('.q')].forEach(el=>{ const t=el.getAttribute('data-tex')||''; renderKatex(el,t); });
+
+  // Lock all but first
   const sections=[...container.querySelectorAll('.room')];
   sections.forEach((sec,idx)=>{ if(idx>0){sec.style.opacity=.5; sec.style.pointerEvents='none'} });
-  sections.forEach((sec,roomIdx)=>{
-    sec.addEventListener('click', (e)=>{
-      if(!(e.target instanceof HTMLElement)) return;
-      if(e.target.classList.contains('check')){
-        const probEl=e.target.closest('.problem');
-        const i=Number(probEl.dataset.i);
-        const ans=ROOMS[roomIdx].problems[i].ans;
-        const input=probEl.querySelector('input').value;
-        const fb=probEl.querySelector('.feedback');
-        if(correct(ans,input)){ fb.textContent='Correct!'; fb.className='feedback ok'; probEl.style.borderColor='#86efac'; }
-        else { fb.textContent='Try again'; fb.className='feedback bad'; probEl.style.borderColor='#fecaca'; }
-        checkUnlock(roomIdx);
-      }
-      if(e.target.classList.contains('summary')){
-        const solved=[...sec.querySelectorAll('.feedback.ok')].length; const total=ROOMS[roomIdx].problems.length; alert(`${ROOMS[roomIdx].name}: ${solved}/${total} solved`);
-      }
-    });
+
+  // Event delegation for ALL buttons/inputs (very robust)
+  container.addEventListener('click', (e)=>{
+    const target = e.target;
+    if(!(target instanceof HTMLElement)) return;
+    if(target.classList.contains('check')){
+      const probEl = target.closest('.problem');
+      const secEl  = target.closest('.room');
+      const roomIdx = Number(secEl.dataset.room);
+      const i = Number(probEl.dataset.i);
+      const inp = probEl.querySelector('input');
+      const fb  = probEl.querySelector('.feedback');
+      const acceptable = Array.isArray(ROOMS[roomIdx].problems[i].ans) ? ROOMS[roomIdx].problems[i].ans : [ROOMS[roomIdx].problems[i].ans];
+      const val = (inp.value||'').replace(/\s+/g,'');
+      const ok = acceptable.some(a => (a||'').replace(/\s+/g,'') === val);
+      if(ok){ fb.textContent='Correct!'; fb.className='feedback ok'; probEl.style.borderColor='#86efac'; }
+      else { fb.textContent='Try again'; fb.className='feedback bad'; probEl.style.borderColor='#fecaca'; }
+      checkUnlock(roomIdx);
+    }
+    if(target.classList.contains('summary')){
+      const secEl  = target.closest('.room');
+      const roomIdx = Number(secEl.dataset.room);
+      const solved = secEl.querySelectorAll('.feedback.ok').length;
+      const total  = ROOMS[roomIdx].problems.length;
+      alert(`${ROOMS[roomIdx].name}: ${solved}/${total} solved`);
+    }
+  });
+
+  // Enter submits
+  container.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter'){
+      const probEl = e.target.closest('.problem');
+      if(probEl){ const btn=probEl.querySelector('button.check'); btn.click(); }
+    }
   });
 }
 
@@ -189,7 +162,7 @@ function checkUnlock(roomIdx){
   }
 }
 
-document.addEventListener('DOMContentLoaded', build);
+document.addEventListener('DOMContentLoaded', renderAll);
 </script>
 </body>
 </html>
