@@ -43,19 +43,19 @@ function renderKatex(el, tex){ try { katex.render(tex, el, {throwOnError:false})
 const ROOMS = [
   { name:"Room 1 — Mild 🌶", problems:[
     {q:'(y^6)^{2/3}', ans:['y^4','y^4']},
-    {q:'(49b^{10})^{1/2} \cdot b^4', ans:['7b^9','7*b^9']},
+    {q:'(49b^{10})^{1/2} \\cdot b^4', ans:['7b^9','7*b^9']},
   ]},
   { name:"Room 2 — Medium 🌶🌶", problems:[
     {q:'(8z^9)^{4/3}', ans:['16z^12','16*z^12']},
     {q:'(p^{-4}q^{10})^{3/2}', ans:['q^15/p^6','q^15/(p^6)']},
   ]},
   { name:"Room 3 — Hot 🌶🌶🌶", problems:[
-    {q:'(p^{-2}q^{1/4} \cdot p^3q^{5/4})^2', ans:['p^2q^3','p^2*q^3']},
-    {q:'3r^3 \cdot 9r^{1/2} \cdot r^{-2}', ans:['27r^{3/2}','27*r^(3/2)']},
+    {q:'(p^{-2}q^{1/4} \\cdot p^3q^{5/4})^2', ans:['p^2q^3','p^2*q^3']},
+    {q:'3r^3 \\cdot 9r^{1/2} \\cdot r^{-2}', ans:['27r^{3/2}','27*r^(3/2)']},
   ]},
   { name:"Room 4 — Spicy 🌶🌶🌶🌶", problems:[
     {q:'(16m^4)^{-1.5}', ans:['1/(64m^6)','1/(64*m^6)']},
-    {q:'\dfrac{3u^{5/6}}{9u^{2/3}}', ans:['u^(1/6)/3','u^(1/6)/3']},
+    {q:'\\dfrac{3u^{5/6}}{9u^{2/3}}', ans:['u^(1/6)/3','u^(1/6)/3']},
   ]},
 ];
 
